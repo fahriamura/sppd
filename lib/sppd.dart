@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sppd/sppdDetail.dart';
+import 'package:sppd/sppdMasterCreate.dart';
 
 class SPPDScreen extends StatelessWidget {
   @override
@@ -19,7 +20,7 @@ class SPPDScreen extends StatelessWidget {
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
-                          builder: (context) => SppdDetails(),
+                          builder: (context) => SppdCreate(),
                           isScrollControlled: true,
                         );
                       },
