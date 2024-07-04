@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sppd/sppd.dart';
+import 'package:sppd/FrontEnd/SppdMaster/sppd.dart';
+import 'package:sppd/FrontEnd/TickerProvider/SPPD.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: SPPDScreen(),
+      home: SppdAdapter(),
     );
   }
 }

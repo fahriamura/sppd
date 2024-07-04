@@ -1,7 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../Database/PostSppd.dart';
+
 class SppdDetails extends StatelessWidget {
+  final Sppd sppd; // Declare Sppd object as a field
+
+  SppdDetails({required this.sppd}); // Constructor to receive Sppd object
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,7 +37,7 @@ class SppdDetails extends StatelessWidget {
                       padding: EdgeInsets.all(5),
                       color: Colors.grey[300],
                       child: Text(
-                        '14/SPPD/03/2024',
+                        sppd.noSppd,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10,
@@ -51,7 +57,7 @@ class SppdDetails extends StatelessWidget {
                       padding: EdgeInsets.all(5),
                       color: Colors.grey[300],
                       child: Text(
-                        '22-06-2003',
+                        sppd.tanggalDikeluarkan != null ? sppd.tanggalDikeluarkan!.toString().substring(0, 10) : '',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10,
@@ -71,7 +77,7 @@ class SppdDetails extends StatelessWidget {
                       padding: EdgeInsets.all(5),
                       color: Colors.grey[300],
                       child: Text(
-                        '22-06-2003',
+                        sppd.tanggalPermohonan != null ? sppd.tanggalPermohonan!.toString().substring(0, 10) : '',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10,
@@ -107,7 +113,7 @@ class SppdDetails extends StatelessWidget {
                       padding: EdgeInsets.all(5),
                       color: Colors.grey[300],
                       child: Text(
-                        '22-06-2003',
+                        sppd.tanggalMulai != null ? sppd.tanggalMulai!.toString().substring(0, 10) : '',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10,
@@ -127,7 +133,7 @@ class SppdDetails extends StatelessWidget {
                       padding: EdgeInsets.all(5),
                       color: Colors.grey[300],
                       child: Text(
-                        '22-06-2003',
+                        sppd.tanggalAkhir != null ? sppd.tanggalAkhir!.toString().substring(0, 10) : '',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10,
@@ -138,7 +144,6 @@ class SppdDetails extends StatelessWidget {
                   ],
                 ),
               ),
-
             ],
           ),
           SizedBox(height: 10,),
@@ -154,7 +159,7 @@ class SppdDetails extends StatelessWidget {
                       padding: EdgeInsets.all(5),
                       color: Colors.grey[300],
                       child: Text(
-                        'Internal',
+                        sppd.tipeOrganisasi,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10,
@@ -174,7 +179,7 @@ class SppdDetails extends StatelessWidget {
                       padding: EdgeInsets.all(5),
                       color: Colors.grey[300],
                       child: Text(
-                        'Pesawat',
+                        sppd.transportasi,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10,
@@ -194,7 +199,7 @@ class SppdDetails extends StatelessWidget {
                       padding: EdgeInsets.all(5),
                       color: Colors.grey[300],
                       child: Text(
-                        'Selesai',
+                        sppd.status,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10,
@@ -209,7 +214,6 @@ class SppdDetails extends StatelessWidget {
           ),
           SizedBox(height: 10,),
           Row(
-
             children: [
               Expanded(
                 child: Column(
@@ -220,7 +224,7 @@ class SppdDetails extends StatelessWidget {
                       padding: EdgeInsets.all(5),
                       color: Colors.grey[300],
                       child: Text(
-                        'Pusat Data dan Informasi',
+                        sppd.organisasi,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10,
@@ -246,7 +250,7 @@ class SppdDetails extends StatelessWidget {
                       padding: EdgeInsets.all(5),
                       color: Colors.grey[300],
                       child: Text(
-                        'Kepulauan Riau',
+                        sppd.berangkat,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10,
@@ -266,7 +270,7 @@ class SppdDetails extends StatelessWidget {
                       padding: EdgeInsets.all(5),
                       color: Colors.grey[300],
                       child: Text(
-                        'Jawa Barat',
+                        sppd.tujuan,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10,
@@ -290,14 +294,14 @@ class SppdDetails extends StatelessWidget {
                 padding: EdgeInsets.all(5),
                 color: Colors.grey[300],
                 child: Text(
-                  'Uppacara Kemerdakaan',
+                  sppd.maksud,
                   textAlign: TextAlign.justify,
                   style: TextStyle(
                     fontSize: 10,
                     color: Colors.black,
                   ),
-                  ),
-                )
+                ),
+              ),
             ],
           ),
         ],
