@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:sppd/Backend/AlterFunction.dart';
 
 class Sppd {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -55,7 +56,7 @@ class Sppd {
       tanggalMulai: parseDate(json['SPPD_STR_DT']),
       tanggalAkhir: parseDate(json['SPPD_END_DT']),
       tipeOrganisasi: json['ORG_CD'] ?? '',
-      transportasi: json['TRSPT_CD'] ?? '',
+      transportasi: convertPostToDisplay(json['TRSPT_CD']) ?? '',
       status: json['STAT_CD'] ?? '',
       organisasi: json['ORG_NM'] ?? '',
       berangkat: json['SPPD_ORG_MEMO'] ?? '',

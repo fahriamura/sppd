@@ -1,29 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:sppd/Database/Pengikut.dart';
+import 'package:sppd/FrontEnd/Pengikut/PengikutCreate.dart';
+import 'package:sppd/FrontEnd/Pengikut/pengikutDetail.dart';
 import 'package:sppd/FrontEnd/SppdMaster/sppdDetail.dart';
 import 'package:sppd/FrontEnd/SppdMaster/sppdMasterCreate.dart';
+import 'package:sppd/FrontEnd/TickerProvider/SPPD.dart';
 import 'dart:convert';
 
 import '../../Database/PostSppd.dart';
 
 bool _isDeleteMode = false;
-class SppdMain extends StatefulWidget {
-  const SppdMain({Key? key, this.animationController}) : super(key: key);
+class PengikutMain extends StatefulWidget {
+  const PengikutMain({Key? key, this.animationController, required this.sppd}) : super(key: key);
 
   final AnimationController? animationController;
+  final Sppd sppd;
 
   @override
-  _SppdMainState createState() => _SppdMainState();
+  _PengikutMainState createState() => _PengikutMainState();
 }
 
-class _SppdMainState extends State<SppdMain> with TickerProviderStateMixin {
+class _PengikutMainState extends State<PengikutMain> with TickerProviderStateMixin {
 
   late AnimationController animationController;
   late AnimationController _shakeAnimationController;
 
-  late List<Sppd> sppdList;
-  late List<Sppd> filteredSppdList;
+  late List<Pengikut> pengikutList;
+  late List<Pengikut> filteredPengikutList;
   @override
   void initState() {
     super.initState();
@@ -36,9 +41,9 @@ class _SppdMainState extends State<SppdMain> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 2000),
     );
     animationController.forward();
-    sppdList = [];
-    filteredSppdList = []; // Initialize filteredSppdList
-    fetchSppdList(); // Fetch SPPD list on init
+    pengikutList = [];
+    filteredPengikutList = []; // Initialize filteredSppdList
+    fetchPengikutList(widget.sppd.index); // Fetch SPPD list on init
   }
 
   @override
@@ -51,8 +56,8 @@ class _SppdMainState extends State<SppdMain> with TickerProviderStateMixin {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Hapus SPPD'),
-          content: Text('Apakah anda yakin ingin menghapus SPPD No. $sppdNo?'),
+          title: Text('Hapus Pengikut'),
+          content: Text('Apakah anda yakin ingin menghapus Pengikut No. $sppdNo?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -72,25 +77,23 @@ class _SppdMainState extends State<SppdMain> with TickerProviderStateMixin {
     ).then((value) => value ?? false);
   }
 
-  Future<void> fetchSppdList() async {
+  Future<void> fetchPengikutList(String index) async {
     final response = await http.get(
-      Uri.parse('http://172.30.1.68/get_sppd.php'),
+      Uri.parse('http://172.30.7.252/get_pengikut.php?sppd_mst_seq=$index'),
     );
-    print("test ${response.body}");
 
     if (response.statusCode == 200) {
-      List<Sppd> loadedSppd = [];
+      List<Pengikut> loadedSppd = [];
       List<dynamic> data = json.decode(response.body);
 
       data.forEach((item) {
-        Sppd news = Sppd.fromJson(item);
+        Pengikut news = Pengikut.fromJson(item);
         loadedSppd.add(news);
       });
 
       setState(() {
-        sppdList = loadedSppd;
-        print('aas $sppdList');
-        filteredSppdList = sppdList;
+        pengikutList = loadedSppd;
+        filteredPengikutList = pengikutList;
       });
     } else {
       throw Exception('Failed to load SPPD');
@@ -99,47 +102,47 @@ class _SppdMainState extends State<SppdMain> with TickerProviderStateMixin {
 
   Widget Header() {
     return Padding(padding:EdgeInsets.only(top: 0,bottom: 0,left: 16,right: 16),
-    child:    Container(
-      width: double.infinity,
-      padding:EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.blue,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(90),
-          bottomRight: Radius.circular(90),
+      child:    Container(
+        width: double.infinity,
+        padding:EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(90),
+            bottomRight: Radius.circular(90),
+          ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('images/logo.jpg', height: 60),  // Update with your logo asset
+            SizedBox(width: 10),
+            Column(
+                crossAxisAlignment:CrossAxisAlignment.start,
+                children:[
+                  Text(
+                    'BP BATAM',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    'Badan Pengusahaan Batam',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                ]
+            ),
+
+
+          ],
         ),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset('images/logo.jpg', height: 60),  // Update with your logo asset
-          SizedBox(width: 10),
-          Column(
-              crossAxisAlignment:CrossAxisAlignment.start,
-              children:[
-                Text(
-                  'BP BATAM',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'Badan Pengusahaan Batam',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ]
-          ),
-
-
-        ],
-      ),
-    ),
     );
 
 
@@ -157,7 +160,7 @@ class _SppdMainState extends State<SppdMain> with TickerProviderStateMixin {
               onTap: () {
                 showModalBottomSheet(
                   context: context,
-                  builder: (context) => SppdCreate(),
+                  builder: (context) => PengikutCreate(sppd: widget.sppd),
                   isScrollControlled: true,
                 );
               },
@@ -216,14 +219,14 @@ class _SppdMainState extends State<SppdMain> with TickerProviderStateMixin {
                     width: double.infinity,
                     child: SingleChildScrollView(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: filteredSppdList.isEmpty
+                      child: filteredPengikutList.isEmpty
                           ? Center(
                         child: Text('No SPPD data available'),
                       )
                           : ListView.builder(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        itemCount: filteredSppdList.length,
+                        itemCount: filteredPengikutList.length,
                         itemBuilder: (context, index) {
                           final Animation<double> animation =
                           Tween<double>(
@@ -233,7 +236,7 @@ class _SppdMainState extends State<SppdMain> with TickerProviderStateMixin {
                             CurvedAnimation(
                               parent: animationController,
                               curve: Interval(
-                                (1 / filteredSppdList.length) * index,
+                                (1 / filteredPengikutList.length) * index,
                                 1.0,
                                 curve: Curves.fastOutSlowIn,
                               ),
@@ -241,17 +244,18 @@ class _SppdMainState extends State<SppdMain> with TickerProviderStateMixin {
                           );
                           return SppdCard(
                             shakeAnimationController: _shakeAnimationController,
-                            sppd: filteredSppdList[index],
+                            sppd: widget.sppd,
+                            pengikut: filteredPengikutList[index],
                             statusIcon: index % 2 == 0
                                 ? Icons.check_circle
                                 : Icons.error,
                             onTap: () async {
                               if (_isDeleteMode) {
-                                final shouldDelete = await _showConfirmationDialog(context, filteredSppdList[index].index);
+                                final shouldDelete = await _showConfirmationDialog(context, filteredPengikutList[index].Id);
                                 if (shouldDelete) {
                                   try {
                                     Map<String, dynamic> requestBody = {
-                                      'SPPD_MST_SEQ':  filteredSppdList[index].index,
+                                      'SPPD_MST_SEQ':  filteredPengikutList[index].Id,
                                     };
                                     final response = await http.delete(
                                       Uri.parse('http://172.30.7.252/del_sppd.php'),
@@ -264,7 +268,7 @@ class _SppdMainState extends State<SppdMain> with TickerProviderStateMixin {
                                     if (response.statusCode == 200) {
                                       print("test ${response.body}");
                                       setState(() {
-                                        sppdList.removeWhere((sppd) => sppd.index == filteredSppdList[index].index);
+                                        pengikutList.removeWhere((pengikut) => pengikut.Id == filteredPengikutList[index].Id);
                                       });
                                     } else {
                                       throw Exception('Failed to delete SPPD');
@@ -278,7 +282,7 @@ class _SppdMainState extends State<SppdMain> with TickerProviderStateMixin {
                                 try {
                                   showModalBottomSheet(
                                     context: context,
-                                    builder: (context) => SppdDetails(sppd: filteredSppdList[index]),
+                                    builder: (context) => PengikutDetails(pengikut: filteredPengikutList[index], sppd: widget.sppd),
                                     isScrollControlled: true,
                                   );
                                 } catch (e) {
@@ -340,12 +344,14 @@ class QuarterCirclePainter extends CustomPainter {
 
 class SppdCard extends StatelessWidget {
   final Sppd sppd;
+  final Pengikut pengikut;
   final IconData statusIcon;
   final VoidCallback onTap;
   final AnimationController shakeAnimationController;
 
   SppdCard({
     required this.sppd,
+    required this.pengikut,
     required this.statusIcon,
     required this.onTap,
     required this.shakeAnimationController,
@@ -377,7 +383,7 @@ class SppdCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'No. SPPD',
+                        'Nama',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -386,7 +392,7 @@ class SppdCard extends StatelessWidget {
                       ),
                       SizedBox(height: 4),
                       Text(
-                        sppd.noSppd,
+                        pengikut.Nama,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 14,

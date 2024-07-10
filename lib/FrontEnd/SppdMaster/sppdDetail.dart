@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../Database/PostSppd.dart';
+import '../TickerProvider/PengikutAdapter.dart';
 
 class SppdDetails extends StatelessWidget {
   final Sppd sppd; // Declare Sppd object as a field
@@ -299,6 +300,25 @@ class SppdDetails extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 10,
                     color: Colors.black,
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 16,
+                right: 16,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PengikutAdapter(sppd: sppd)),
+                    );
+                  },
+                  child: Text(
+                    'Tampilkan Pengikut >',
+                    style: TextStyle(
+                      color: Colors.blue, // Adjust the color as needed
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
