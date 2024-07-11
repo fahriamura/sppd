@@ -16,7 +16,9 @@ class Sppd {
   final String transportasi;
   final String status;
   final String organisasi;
+  final String kodeBerangkat;
   final String berangkat;
+  final String kodeTujuan;
   final String tujuan;
   final String maksud;
 
@@ -34,6 +36,8 @@ class Sppd {
     required this.berangkat,
     required this.tujuan,
     required this.maksud,
+    required this.kodeBerangkat,
+    required this.kodeTujuan,
   });
 
   factory Sppd.fromJson(Map<String, dynamic> json) {
@@ -62,6 +66,8 @@ class Sppd {
       berangkat: json['SPPD_ORG_MEMO'] ?? '',
       tujuan: json['SPPD_DEST_MEMO'] ?? '',
       maksud: json['PURPS_CNTT'] ?? '',
+      kodeBerangkat: json['ORG_MGMT_NO'] ?? '',
+      kodeTujuan:  json['DEST_MGMT_NO'] ?? '',
     );
   }
 

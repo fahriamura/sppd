@@ -79,7 +79,7 @@ class _PengikutMainState extends State<PengikutMain> with TickerProviderStateMix
 
   Future<void> fetchPengikutList(String index) async {
     final response = await http.get(
-      Uri.parse('http://172.30.7.252/get_pengikut.php?sppd_mst_seq=$index'),
+      Uri.parse('http://172.30.1.68/get_pengikut.php?sppd_mst_seq=$index'),
     );
 
     if (response.statusCode == 200) {

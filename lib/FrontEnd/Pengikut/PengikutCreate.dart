@@ -548,53 +548,20 @@ class _PengikutCreateState extends State<PengikutCreate> {
               ],
             ),
             SizedBox(height: 10,),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text('Asal', style: TextStyle(color: Colors.black)),
-                      Container(
-                        width: 130,
-                        padding: EdgeInsets.all(5),
-                        color: Colors.grey[300],
-                        child: TextFormField(
-                          controller: _asalPengikutController, // Ganti dengan controller yang sesuai
-                          decoration: InputDecoration.collapsed(hintText: ''),
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.black,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text('Tujuan', style: TextStyle(color: Colors.black)),
-                      Container(
-                        width: 130,
-                        padding: EdgeInsets.all(5),
-                        color: Colors.grey[300],
-                        child: TextFormField(
-                          controller: _tujuanPengikutController, // Ganti dengan controller yang sesuai
-                          decoration: InputDecoration.collapsed(hintText: ''),
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.black,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+            Spacer(),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    submitForm(context);
+                    print('aa $kodeTujuan');
+                    print('bb $kodeBerangkat');
+                  }
+                },
+                child: Text('Submit'),
+              ),
             ),
-            SizedBox(height: 10,),
           ],
         ),
 
@@ -603,15 +570,14 @@ class _PengikutCreateState extends State<PengikutCreate> {
   }
 
   void submitForm(BuildContext context) async {
+    // Extracting and formatting data
     final String Id = _noKtpNipController.text;
     final String Jenis = _jenisPengikutController.text;
     final String Nama = _namaController.text;
     final String Organisasi = _organisasiPengikutController.text;
     final String tipe = _tipeSppdController.text;
-    final String berangkat = _berangkatController.text;
-    final String tujuan = _tujuanController.text;
-    final DateTime? periodeAwal = _tanggalBerangkatController.text.isNotEmpty ? DateTime.parse(_tanggalBerangkatController.text) : null;
-    final DateTime? periodeAkhir = _tanggalKembaliController.text.isNotEmpty ? DateTime.parse(_tanggalKembaliController.text) : null;
+    final String berangkat = _berangkatPengikutController.text;
+    final String tujuan = _tujuanPengikutController.text;
     final String tujuanBisnis = _keteranganLainController.text;
     final String wilayah = _wilayahController.text;
     final String status = _statusController.text;
@@ -619,74 +585,86 @@ class _PengikutCreateState extends State<PengikutCreate> {
     final String jabatan = _jabatanController.text;
     final String jenisTujuan = _jenisTujuanController.text;
 
+    // Prepare the request body
+    final Map<String, dynamic> body = {
+      'PTCPNT_ID': Id,
+      'SPPD_MST_SEQ': widget.sppd.index,
+      'PTCPNT_TP_CD': Jenis,
+      'PTCPNT_NM': Nama,
+      'GVRMT_ORG_NM': Organisasi,
+      'SPPD_TP_CD': tipe,
+      'ORG_MGMT_NO': widget.sppd.kodeBerangkat,
+      'SPPD_ORG_MEMO': widget.sppd.berangkat,
+      'DEST_MGMT_NO': widget.sppd.kodeTujuan,
+      'SPPD_DEST_MEMO': widget.sppd.tujuan,
+      'SPPD_STR_DT': _tanggalBerangkatController.text,
+      'SPPD_END_DT': _tanggalKembaliController.text,
+      'SPPD_OBJ_MEMO': tujuanBisnis,
+      'REGN_TP_CD': wilayah,
+      'SPPD_STAT_CD': status,
+      'GRD_CD': golongan,
+      'SPPD_CLS_CD': jabatan,
+      'DEST_TP_CD': jenisTujuan,
+    };
 
-
-    final response = await http.post(
-      Uri.parse('http://172.30.1.68/add_pengikut.php'),
-      body: {
-        'PTCPNT_ID': Id,
-        'SPPD_MST_SEQ': widget.sppd.noSppd,
-        'PTCPNT_TP_CD': Jenis,
-        'PTCPNT_NM': Nama,
-        'GVRMT_ORG_NM': Organisasi,
-        'SPPD_TP_CD': tipe,
-        'ORG_MGMT_NO': kodeBerangkat,
-        'SPPD_ORG_MEMO': berangkat,
-        'DEST_MGMT_NO': kodeTujuan,
-        'SPPD_DEST_MEMO': tujuan,
-        'SPPD_STR_DT': periodeAwal,
-        'SPPD_END_DT': periodeAkhir,
-        'SPPD_OBJ_MEMO': tujuanBisnis,
-        'REGN_TP_CD': wilayah,
-        'SPPD_STAT_CD': status,
-        'GRD_CD': golongan,
-        'SPPD_CLS_CD': jabatan,
-        'DEST_TP_CD': jenisTujuan,
-      },
-    );
-    print(kodeBerangkat);
-    print(kodeTujuan);
-    print(response.body);
-    if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Data berhasil disimpan'),
-        ),
+    try {
+      final response = await http.post(
+        Uri.parse('http://172.30.1.68/add_pengikut.php'),
+        body: body,
       );
 
-      // Clear form fields after submission
-      _jenisPengikutController.clear();
-      _wilayahController.clear();
-      _namaController.clear();
-      _noKtpNipController.clear();
-      _statusPegawaiController.clear();
-      _tipeOrganisasiController.clear();
-      _organisasiPengikutController.clear();
-      _golonganController.clear();
-      _jabatanController.clear();
-      _tipeSppdController.clear();
-      _jenisTujuanController.clear();
-      _berangkatController.clear();
-      _tujuanController.clear();
-      _tanggalBerangkatController.clear();
-      _tanggalKembaliController.clear();
-      _berangkatPengikutController.clear();
-      _transportasiPengikutController.clear();
-      _keteranganLainController.clear();
-      _asalPengikutController.clear();
-      _tujuanPengikutController.clear();
-      _statusController.clear();
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Data berhasil disimpan'),
+          ),
+        );
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => PengikutAdapter(sppd: widget.sppd)),
-      );
-    } else {
-      // Show an error message
+        // Clear form fields after successful submission
+        _jenisPengikutController.clear();
+        _wilayahController.clear();
+        _namaController.clear();
+        _noKtpNipController.clear();
+        _statusPegawaiController.clear();
+        _tipeOrganisasiController.clear();
+        _organisasiPengikutController.clear();
+        _golonganController.clear();
+        _jabatanController.clear();
+        _tipeSppdController.clear();
+        _jenisTujuanController.clear();
+        _berangkatController.clear();
+        _tujuanController.clear();
+        _tanggalBerangkatController.clear();
+        _tanggalKembaliController.clear();
+        _berangkatPengikutController.clear();
+        _transportasiPengikutController.clear();
+        _keteranganLainController.clear();
+        _asalPengikutController.clear();
+        _tujuanPengikutController.clear();
+        _statusController.clear();
+
+        // Navigate to another screen after successful submission
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PengikutAdapter(sppd: widget.sppd)),
+        );
+      } else {
+        // Show error message if the request fails
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Gagal menyimpan data'),
+          ),
+        );
+      }
+    } catch (e) {
+      // Handle exceptions from the http request
+      print('Error posting data: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Gagal menyimpan data'),
+          content: Text('Terjadi kesalahan saat menyimpan data'),
         ),
       );
     }
