@@ -7,19 +7,26 @@ class Provinsi {
   final String Id;
   final String Kode;
   final String Nama;
+  final String NamaKota;
+  final String kodeKota;
+
 
   Provinsi({
     required this.Id,
     required this.Kode,
     required this.Nama,
+    required this.NamaKota,
+    required this.kodeKota
   });
 
   factory Provinsi.fromJson(Map<String, dynamic> json) {
 
     return Provinsi(
-      Id: json['id'],
-      Nama: json['nama'] ?? '',
-      Kode: json['kode'],
+      Id: json['id'] ?? '',
+      Nama: json['namaProv'] ?? '',
+      Kode: json['kodeProv'] ?? '',
+      NamaKota : json['namaKota'],
+      kodeKota : json['kodeKota']
     );
   }
 }

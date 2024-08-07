@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sppd/Database/PostSppd.dart';
 import 'package:sppd/FrontEnd/SppdMaster/sppd.dart';
 
+
 class SppdAdapter extends StatefulWidget {
 
   const SppdAdapter({Key? key}) : super(key: key);

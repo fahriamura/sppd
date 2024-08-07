@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sppd/Backend/AlterFunction.dart';
 
 import '../../Database/PostSppd.dart';
 import '../TickerProvider/PengikutAdapter.dart';
@@ -38,7 +39,7 @@ class SppdDetails extends StatelessWidget {
                       padding: EdgeInsets.all(5),
                       color: Colors.grey[300],
                       child: Text(
-                        sppd.noSppd,
+                        '${sppd.index}${sppd.noSppd}',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10,
@@ -160,7 +161,7 @@ class SppdDetails extends StatelessWidget {
                       padding: EdgeInsets.all(5),
                       color: Colors.grey[300],
                       child: Text(
-                        sppd.tipeOrganisasi,
+                        convertPostToDisplay(sppd.tipeOrganisasi),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10,
@@ -200,7 +201,7 @@ class SppdDetails extends StatelessWidget {
                       padding: EdgeInsets.all(5),
                       color: Colors.grey[300],
                       child: Text(
-                        sppd.status,
+                        convertPostToDisplay(sppd.status),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10,
@@ -225,7 +226,7 @@ class SppdDetails extends StatelessWidget {
                       padding: EdgeInsets.all(5),
                       color: Colors.grey[300],
                       child: Text(
-                        sppd.organisasi,
+                        convertPostToDisplay(sppd.organisasi),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10,

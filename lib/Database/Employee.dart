@@ -21,11 +21,11 @@ class Employee {
   factory Employee.fromJson(Map<String, dynamic> json) {
 
     return Employee(
-      Id: json['SPPD_MST_SEQ'],
-      Nama: json['SPPD_DOC_NO'] ?? '',
-      statusPegawai: json['SPPD_ISSU_DT'],
-      golongan: json['RQEST_DT'],
-      jabatan: json['SPPD_STR_DT'],
+      Id: json['EMP_ID'],
+      Nama: json['EMP_NM'] ?? '',
+      statusPegawai: json['OFFCR_TP_CD'],
+      golongan: json['GRD_CD'],
+      jabatan: json['WORK_TP_CD'],
     );
   }
 }

@@ -7,9 +7,12 @@ import 'package:intl/intl.dart';
 import 'package:sppd/Backend/AlterFunction.dart';
 import 'package:sppd/FrontEnd/SppdMaster/sppd.dart';
 
+import '../../Database/Pesawat.dart';
+import '../../Database/PostSppd.dart';
 import '../../Database/Provinsi.dart';
 import '../TickerProvider/SPPD.dart';
 class SppdCreate extends StatefulWidget {
+
   @override
   _SppdCreateState createState() => _SppdCreateState();
 }
@@ -35,27 +38,42 @@ class _SppdCreateState extends State<SppdCreate> {
   DateTime? _tanggalMulai;
   DateTime? _tanggalAkhir;
 
-  List<String> provinsiList = [];
-  List<String> kotaList =[];
-  List<String> kodeProvinsi= [];
+  List<Pesawat> pesawatList =[];
+  List<Provinsi> provinsiList = [];
   List<String> kodeKota=[];
   late String kodeBerangkat = '';
   late String kodeTujuan = '';
+  String Harga ='';
   @override
   void initState() {
     super.initState();
+    fetchPesawatList();
     fetchProvinsiList();
   }
-
-  void fetchProvinsiList() async {
-    String url = 'http://172.30.1.68/get_kota.php';
+  void fetchPesawatList() async {
+    String url = 'http://${api}/get_pesawat.php';
     try {
       final response = await http.get(Uri.parse(url));
       print(response.statusCode);
+      print(response.body);
       if (response.statusCode == 200) {
         List<dynamic> jsonResponse = json.decode(response.body);
-        provinsiList = jsonResponse.map((e) => e['namaProv'].toString()).toList();
-        kodeProvinsi = jsonResponse.map((e) => e['kodeProv'].toString()).toList();
+        pesawatList = jsonResponse.map((pesawat) => Pesawat.fromJson(pesawat)).toList();
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+      }
+    } catch (e) {
+      print('Error fetching pesawat data: $e');
+    }
+  }
+  void fetchProvinsiList() async {
+    String url = 'http://${api}/get_kota.php';
+    try {
+      final response = await http.get(Uri.parse(url));
+      print(response.body);
+      if (response.statusCode == 200) {
+        List<dynamic> jsonResponse = json.decode(response.body);
+        provinsiList = jsonResponse.map((provinsi) => Provinsi.fromJson(provinsi)).toList();
       } else {
         print('Request failed with status: ${response.statusCode}.');
       }
@@ -70,57 +88,59 @@ class _SppdCreateState extends State<SppdCreate> {
         String initialValue = controller.text;
         String? selectedValue = initialValue;
 
-        // Filtered list based on search query
-        List<String> filteredProvinsiList = List.from(provinsiList);
-        return AlertDialog(
-          title: Text('Pilih Provinsi'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Cari provinsi...',
-                  prefixIcon: Icon(Icons.search),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    filteredProvinsiList = provinsiList
-                        .where((provinsi) =>
-                        provinsi.toLowerCase().contains(value.toLowerCase()))
-                        .toList();
-                  });
-                },
-              ),
-              SizedBox(height: 10),
-              Container(
-                height: 300,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: filteredProvinsiList.map((provinsi) {
-                      int index = provinsiList.indexOf(provinsi);
-                      String kodeProvinsiSelected = kodeProvinsi[index];
-                      return ListTile(
-                        title: Text(provinsi),
-                        onTap: () {
-                          selectedValue = provinsi;
-                          setState(() {
-                            Kode = kodeProvinsiSelected; // Update Kode here
-                            if (controller == _berangkatController) {
-                              kodeBerangkat = kodeProvinsiSelected; // Update kodeBerangkat
-                            } else if (controller == _tujuanController) {
-                              kodeTujuan = kodeProvinsiSelected; // Update kodeTujuan
-                            }
-                          });
-                          Navigator.of(context).pop(selectedValue);
-                        },
-                        selected: provinsi == initialValue,
-                      );
-                    }).toList(),
+        List<Provinsi> filteredProvinsiList = List.from(provinsiList);
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Pilih Provinsi'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Cari provinsi...',
+                      prefixIcon: Icon(Icons.search),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        filteredProvinsiList = provinsiList
+                            .where((provinsi) => provinsi.Nama
+                            .toLowerCase()
+                            .contains(value.toLowerCase()))
+                            .toList();
+                      });
+                    },
                   ),
-                ),
+                  SizedBox(height: 10),
+                  Container(
+                    height: 300,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: filteredProvinsiList.map((provinsi) {
+                          return ListTile(
+                            title: Text(provinsi.Nama),
+                            onTap: () {
+                              selectedValue = provinsi.Nama;
+                              setState(() {
+                                Kode = provinsi.Kode;
+                                if (controller == _berangkatController) {
+                                  kodeBerangkat = provinsi.Kode;
+                                } else if (controller == _tujuanController) {
+                                  kodeTujuan = provinsi.Kode;
+                                }
+                              });
+                              Navigator.of(context).pop(selectedValue);
+                            },
+                            selected: provinsi.Nama == initialValue,
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -134,6 +154,9 @@ class _SppdCreateState extends State<SppdCreate> {
   @override
   Widget build(BuildContext context) {
     List<String> transportasiList = ['Pesawat'];
+    List<String> statusList = ['Complete','Menunggu'];
+    List<String> tipeOrg = ['Internal','External'];
+    List<String> org= ['Pusat Data dan Sistem Informasi'];
 
 
 
@@ -170,6 +193,147 @@ class _SppdCreateState extends State<SppdCreate> {
                   },
                 ),
                 SizedBox(height: 10),
+                Container(
+                  height: 300, // Adjust height as needed
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: filteredTransportasiList.map((transportasi) {
+                        return ListTile(
+                          title: Text(transportasi),
+                          onTap: () {
+                            selectedValue = transportasi;
+                            Navigator.of(context).pop(selectedValue);
+                          },
+                          selected: transportasi == initialValue,
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+
+      if (selectedTransportasi != null) {
+        String displayText = selectedTransportasi.replaceAll('C8001', 'Pesawat');
+        controller.text = displayText;
+        String postValue = displayText.replaceAll('Pesawat', 'C8001');
+
+      }
+    }
+    void _showStatus(TextEditingController controller) async {
+      String? selectedTransportasi = await showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          String initialValue = controller.text;
+          String? selectedValue = initialValue;
+          String displayValue = initialValue;
+
+
+          // Filtered list based on search query
+          List<String> filteredTransportasiList = List.from(statusList);
+
+          return AlertDialog(
+            title: Text('Pilih Transportasi'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  height: 300, // Adjust height as needed
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: filteredTransportasiList.map((transportasi) {
+                        return ListTile(
+                          title: Text(transportasi),
+                          onTap: () {
+                            selectedValue = transportasi;
+                            Navigator.of(context).pop(selectedValue);
+                          },
+                          selected: transportasi == initialValue,
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+
+      if (selectedTransportasi != null) {
+        String displayText = selectedTransportasi.replaceAll('C8001', 'Pesawat');
+        controller.text = displayText;
+        String postValue = displayText.replaceAll('Pesawat', 'C8001');
+
+      }
+    }
+    void _showTipe(TextEditingController controller) async {
+      String? selectedTransportasi = await showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          String initialValue = controller.text;
+          String? selectedValue = initialValue;
+          String displayValue = initialValue;
+
+
+          // Filtered list based on search query
+          List<String> filteredTransportasiList = List.from(tipeOrg);
+
+          return AlertDialog(
+            title: Text('Pilih Transportasi'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  height: 300, // Adjust height as needed
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: filteredTransportasiList.map((transportasi) {
+                        return ListTile(
+                          title: Text(transportasi),
+                          onTap: () {
+                            selectedValue = transportasi;
+                            Navigator.of(context).pop(selectedValue);
+                          },
+                          selected: transportasi == initialValue,
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+
+      if (selectedTransportasi != null) {
+        String displayText = selectedTransportasi.replaceAll('C8001', 'Pesawat');
+        controller.text = displayText;
+        String postValue = displayText.replaceAll('Pesawat', 'C8001');
+
+      }
+    }
+    void _showOrganisasi(TextEditingController controller) async {
+      String? selectedTransportasi = await showDialog<String>(
+        context: context,
+        builder: (BuildContext context) {
+          String initialValue = controller.text;
+          String? selectedValue = initialValue;
+          String displayValue = initialValue;
+
+
+          // Filtered list based on search query
+          List<String> filteredTransportasiList = List.from(org);
+
+          return AlertDialog(
+            title: Text('Pilih Transportasi'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
                 Container(
                   height: 300, // Adjust height as needed
                   child: SingleChildScrollView(
@@ -241,74 +405,7 @@ class _SppdCreateState extends State<SppdCreate> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text('No. SPPD', style: TextStyle(color: Colors.black)),
-                      Container(
-                        width: 130,
-                        padding: EdgeInsets.all(5),
-                        color: Colors.grey[300],
-                        child: TextFormField(
-                          controller: _noSppdController,
-                          decoration: InputDecoration.collapsed(hintText: ''),
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.black,
-                          ),
-                          textAlign: TextAlign.center,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Masukkan No. SPPD';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text('Tanggal Dikeluarkan', style: TextStyle(color: Colors.black)),
-                      Container(
-                        width: 130,
-                        padding: EdgeInsets.all(5),
-                        color: Colors.grey[300],
-                        child: TextFormField(
-                          readOnly: true,
-                          controller: _tanggalDikeluarkanController,
-                          decoration: InputDecoration.collapsed(hintText: ''),
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.black,
-                          ),
-                          textAlign: TextAlign.center,
-                          onTap: () async {
-                            final selectedDate = await selectDate(
-                              context,
-                              _tanggalDikeluarkan,
-                                  (date) {
-                                setState(() {
-                                  _tanggalDikeluarkan = date;
-                                  _tanggalDikeluarkanController.text =
-                                      _dateFormat.format(date);
-                                });
-                              },
-                            );
-                          },
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Masukkan Tanggal Dikeluarkan';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+
                 Expanded(
                   child: Column(
                     children: [
@@ -346,22 +443,6 @@ class _SppdCreateState extends State<SppdCreate> {
                             return null;
                           },
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 130,
-                        padding: EdgeInsets.all(5),
                       ),
                     ],
                   ),
@@ -465,7 +546,11 @@ class _SppdCreateState extends State<SppdCreate> {
                         padding: EdgeInsets.all(5),
                         color: Colors.grey[300],
                         child: TextFormField(
+                          readOnly: true,
                           controller: _tipeOrganisasiController,
+                          onTap: (){
+                            _showTipe(_tipeOrganisasiController);
+                          },
                           decoration: InputDecoration.collapsed(hintText: ''),
                           style: TextStyle(
                             fontSize: 10,
@@ -518,6 +603,10 @@ class _SppdCreateState extends State<SppdCreate> {
                         color: Colors.grey[300],
                         child: TextFormField(
                           controller: _statusController,
+                          readOnly: true,
+                          onTap: (){
+                            _showStatus(_statusController);
+                          },
                           decoration: InputDecoration.collapsed(hintText: ''),
                           style: TextStyle(
                             fontSize: 10,
@@ -551,6 +640,10 @@ class _SppdCreateState extends State<SppdCreate> {
                         color: Colors.grey[300],
                         child: TextFormField(
                           controller: _organisasiController,
+                          readOnly: true,
+                          onTap: (){
+                            _showOrganisasi(_organisasiController);
+                          },
                           decoration: InputDecoration.collapsed(hintText: ''),
                           style: TextStyle(
                             fontSize: 10,
@@ -664,10 +757,31 @@ class _SppdCreateState extends State<SppdCreate> {
       ),
     );
   }
+  bool searchPesawat(String kodeBerangkat, String kodeTujuan) {
+    String kodeKotaBerangkat ='';
+    String kodeKotaTujuan ='';
+    for (var provinsi in provinsiList){
+      if(kodeBerangkat == provinsi.Kode ){
+        kodeKotaBerangkat = provinsi.kodeKota;
+      }
+      if(kodeTujuan == provinsi.Kode){
+        kodeKotaTujuan = provinsi.kodeKota;
+      }
+      for (var pesawat in pesawatList) {
+        if (pesawat.Asal == kodeKotaBerangkat && pesawat.Tujuan == kodeKotaTujuan) {
+          return true;
+        }
+      }
+    }
 
+    return false;
+  }
   void submitForm(BuildContext context) async {
-    final noSppd = _noSppdController.text;
-    final tanggalDikeluarkan = _tanggalDikeluarkanController.text;
+    String input = DateTime.now().toIso8601String();
+    String issu = DateFormat('yyyyMMdd').format(DateTime.parse(input));
+    String formattedDate = DateFormat('yyyy/MM/dd').format(DateTime.parse(input));
+    final noSppd = '/SPPD/${formattedDate}';
+    final tanggalDikeluarkan = issu;
     final tanggalPermohonan = _tanggalPermohonanController.text;
     final tanggalMulai = _tanggalMulaiController.text;
     final tanggalAkhir = _tanggalAkhirController.text;
@@ -679,60 +793,67 @@ class _SppdCreateState extends State<SppdCreate> {
     final tujuan = _tujuanController.text;
     final maksud = _maksudController.text;
 
+    print(searchPesawat(kodeBerangkat, kodeTujuan));
+    if (searchPesawat(kodeBerangkat, kodeTujuan)){
+      final response = await http.post(
+        Uri.parse('http://${api}/add_sppd.php'),
+        body: {
+          'SPPD_DOC_NO': noSppd,
+          'SPPD_ISSU_DT': tanggalDikeluarkan,
+          'RQEST_DT': tanggalPermohonan,
+          'SPPD_STR_DT': tanggalMulai,
+          'SPPD_END_DT': tanggalAkhir,
+          'ORG_CD': convertTransportasiDisplayToPost(tipeOrganisasi),
+          'TRSPT_CD': transportasi,
+          'STAT_CD': convertTransportasiDisplayToPost(status),
+          'ORG_NM': convertTransportasiDisplayToPost(organisasi),
+          'ORG_MGMT_NO' : kodeBerangkat,
+          'SPPD_ORG_MEMO': berangkat,
+          'DEST_MGMT_NO' : kodeTujuan,
+          'SPPD_DEST_MEMO': tujuan,
+          'PURPS_CNTT': maksud,
+        },
+      );
+      print(kodeBerangkat);
+      print(kodeTujuan);
+      print(response.body);
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Data berhasil disimpan'),
+          ),
+        );
 
-
-    final response = await http.post(
-      Uri.parse('http://172.30.1.68/add_sppd.php'),
-      body: {
-        'SPPD_DOC_NO': noSppd,
-        'SPPD_ISSU_DT': tanggalDikeluarkan,
-        'RQEST_DT': tanggalPermohonan,
-        'SPPD_STR_DT': tanggalMulai,
-        'SPPD_END_DT': tanggalAkhir,
-        'ORG_CD': tipeOrganisasi,
-        'TRSPT_CD': transportasi,
-        'STAT_CD': status,
-        'ORG_NM': organisasi,
-        'ORG_MGMT_NO' : kodeBerangkat,
-        'SPPD_ORG_MEMO': berangkat,
-        'DEST_MGMT_NO' : kodeTujuan,
-        'SPPD_DEST_MEMO': tujuan,
-        'PURPS_CNTT': maksud,
-      },
-    );
-    print(kodeBerangkat);
-    print(kodeTujuan);
-    print(response.body);
-    if (response.statusCode == 200) {
+        // Clear form fields after submission
+        _noSppdController.clear();
+        _tanggalDikeluarkanController.clear();
+        _tanggalPermohonanController.clear();
+        _tanggalMulaiController.clear();
+        _tanggalAkhirController.clear();
+        _tipeOrganisasiController.clear();
+        _transportasiController.clear();
+        _statusController.clear();
+        _organisasiController.clear();
+        _berangkatController.clear();
+        _tujuanController.clear();
+        _maksudController.clear();
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SppdAdapter()),
+        );
+      } else {
+        // Show an error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Gagal menyimpan data'),
+          ),
+        );
+      }
+    }
+    else{
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Data berhasil disimpan'),
-        ),
-      );
-
-      // Clear form fields after submission
-      _noSppdController.clear();
-      _tanggalDikeluarkanController.clear();
-      _tanggalPermohonanController.clear();
-      _tanggalMulaiController.clear();
-      _tanggalAkhirController.clear();
-      _tipeOrganisasiController.clear();
-      _transportasiController.clear();
-      _statusController.clear();
-      _organisasiController.clear();
-      _berangkatController.clear();
-      _tujuanController.clear();
-      _maksudController.clear();
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SppdAdapter()),
-      );
-    } else {
-      // Show an error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Gagal menyimpan data'),
+          content: Text('Perjalanan Tidak Ditemukan'),
         ),
       );
     }
