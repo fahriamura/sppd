@@ -409,7 +409,7 @@ class _SppdCreateState extends State<SppdCreate> {
                 Expanded(
                   child: Column(
                     children: [
-                      Text('Tanggal Permohonan', style: TextStyle(color: Colors.black)),
+                      Text('Permohonan', style: TextStyle(color: Colors.black)),
                       Container(
                         width: 130,
                         padding: EdgeInsets.all(5),
@@ -447,6 +447,7 @@ class _SppdCreateState extends State<SppdCreate> {
                     ],
                   ),
                 ),
+                SizedBox(width: 5,),
                 Expanded(
                   child: Column(
                     children: [
@@ -488,6 +489,7 @@ class _SppdCreateState extends State<SppdCreate> {
                     ],
                   ),
                 ),
+                SizedBox(width: 5,),
                 Expanded(
                   child: Column(
                     children: [
@@ -562,6 +564,7 @@ class _SppdCreateState extends State<SppdCreate> {
                     ],
                   ),
                 ),
+                SizedBox(width: 5,),
                 Expanded(
                   child: Column(
                     children: [
@@ -593,6 +596,7 @@ class _SppdCreateState extends State<SppdCreate> {
                     ],
                   ),
                 ),
+                SizedBox(width: 5,),
                 Expanded(
                   child: Column(
                     children: [
@@ -687,6 +691,7 @@ class _SppdCreateState extends State<SppdCreate> {
                     ],
                   ),
                 ),
+                SizedBox(width: 5,),
                 Expanded(
                   child: Column(
                     children: [

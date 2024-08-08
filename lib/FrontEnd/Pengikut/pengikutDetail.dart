@@ -53,6 +53,7 @@ class PengikutDetails extends StatelessWidget {
                     ],
                   ),
                 ),
+                SizedBox(width: 5,),
                 Expanded(
                   child: Column(
                     children: [
@@ -62,6 +63,7 @@ class PengikutDetails extends StatelessWidget {
                     ],
                   ),
                 ),
+                SizedBox(width: 5,),
                 Expanded(
                   child: Column(
                     children: [
@@ -108,6 +110,7 @@ class PengikutDetails extends StatelessWidget {
                     ],
                   ),
                 ),
+                SizedBox(width: 5,),
                 Expanded(
                   child: Column(
                     children: [
@@ -128,6 +131,7 @@ class PengikutDetails extends StatelessWidget {
                     ],
                   ),
                 ),
+                SizedBox(width: 5,),
                 Expanded(
                   child: Column(
                     children: [
@@ -174,6 +178,7 @@ class PengikutDetails extends StatelessWidget {
                     ],
                   ),
                 ),
+                SizedBox(width: 5,),
                 Expanded(
                   child: Column(
                     children: [
@@ -194,6 +199,7 @@ class PengikutDetails extends StatelessWidget {
                     ],
                   ),
                 ),
+                SizedBox(width: 5,),
                 Expanded(
                   child: Column(
                     children: [
@@ -239,6 +245,7 @@ class PengikutDetails extends StatelessWidget {
                     ],
                   ),
                 ),
+                SizedBox(width: 5,),
                 Expanded(
                   child: Column(
                     children: [
@@ -285,6 +292,7 @@ class PengikutDetails extends StatelessWidget {
                     ],
                   ),
                 ),
+                SizedBox(width: 5,),
                 Expanded(
                   child: Column(
                     children: [
@@ -331,6 +339,7 @@ class PengikutDetails extends StatelessWidget {
                     ],
                   ),
                 ),
+                SizedBox(width: 5,),
                 Expanded(
                   child: Column(
                     children: [

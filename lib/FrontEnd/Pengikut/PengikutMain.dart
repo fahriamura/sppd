@@ -148,7 +148,7 @@ class _PengikutMainState extends State<PengikutMain> with TickerProviderStateMix
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Image.asset('images/logo.jpg', height: 60),  // Update with your logo asset
+            Image.asset('assets/images/logo.jpg', height: 60),  // Update with your logo asset
             SizedBox(width: 10),
             Column(
                 crossAxisAlignment:CrossAxisAlignment.start,
@@ -267,13 +267,16 @@ class _PengikutMainState extends State<PengikutMain> with TickerProviderStateMix
                                               ),
                                             ),
                                             SizedBox(width: 8),
-                                            Text(
-                                              widget.sppd.index + widget.sppd.noSppd,
+                                            ResponsiveText(
+                                              text: widget.sppd.index + widget.sppd.noSppd,
+                                              minFontSize: 8,
+                                              maxFontSize: 14,
                                               style: TextStyle(
                                                 color: Colors.black,
-                                                fontSize: 14,
                                               ),
+                                              overflow: TextOverflow.clip,
                                             ),
+
                                           ],
                                         ),
                                         SizedBox(height: 10),
@@ -618,7 +621,7 @@ class SppdCard extends StatelessWidget {
         builder: (context, child) {
           return Transform.rotate(
             angle: _isDeleteMode
-                ? shakeAnimationController.value * 0.05 // Adjust the shaking amplitude as needed
+                ? shakeAnimationController.value * 0.05
                 : 0,
             child: Container(
               margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -644,11 +647,14 @@ class SppdCard extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Text(
-                            pengikut.Nama,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
+                          Flexible(
+                            child: Text(
+                              pengikut.Nama,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
@@ -664,11 +670,14 @@ class SppdCard extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Text(
-                            pengikut.Id,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
+                          Flexible(
+                            child: Text(
+                              pengikut.Id,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
@@ -683,11 +692,14 @@ class SppdCard extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Text(
-                            getLastTwoDigits(pengikut.golongan),
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
+                          Flexible(
+                            child: Text(
+                              getLastTwoDigits(pengikut.golongan),
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],

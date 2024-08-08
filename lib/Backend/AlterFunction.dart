@@ -1,7 +1,8 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
-const String api = "172.30.5.200";
+const String api = "172.30.2.193";
 
 String convertTransportasiDisplayToPost(String displayValue) {
   switch (displayValue) {
@@ -75,4 +76,34 @@ String convertPostToDisplay(String displayValue) {
 String formatCurrency(double amount) {
   final numberFormat = NumberFormat.currency(locale: 'id_ID', symbol: '', decimalDigits: 2);
   return numberFormat.format(amount);
+}
+
+class ResponsiveText extends StatelessWidget {
+  final String text;
+  final double minFontSize;
+  final double maxFontSize;
+  final TextStyle style;
+  final TextOverflow overflow;
+
+  ResponsiveText({
+    required this.text,
+    required this.minFontSize,
+    required this.maxFontSize,
+    required this.style,
+    required this.overflow,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double fontSize = (screenWidth / 10).clamp(minFontSize, maxFontSize);
+
+    return Flexible(
+      child: Text(
+        text,
+        style: style.copyWith(fontSize: fontSize),
+        overflow: overflow,
+      ),
+    );
+  }
 }

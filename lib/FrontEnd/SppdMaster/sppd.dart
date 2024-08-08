@@ -124,7 +124,7 @@ class _SppdMainState extends State<SppdMain> with TickerProviderStateMixin {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Image.asset('images/logo.jpg', height: 60),  // Update with your logo asset
+          Image.asset('assets/images/logo.jpg', height: 60),
           SizedBox(width: 10),
           Column(
               crossAxisAlignment:CrossAxisAlignment.start,
@@ -527,7 +527,7 @@ class SppdCard extends StatelessWidget {
                                     ],
                                   ),
                                   SizedBox(width: 16),
-                                  Image.asset('images/line.png',
+                                  Image.asset('assets/images/line.png',
                                   height: 90,
                                   width: 130,),
                                   SizedBox(width: 16),

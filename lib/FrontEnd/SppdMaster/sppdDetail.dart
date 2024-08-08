@@ -50,30 +50,40 @@ class SppdDetails extends StatelessWidget {
                   ],
                 ),
               ),
+              SizedBox(width: 5,),
               Expanded(
                 child: Column(
                   children: [
-                    Text('Tanggal Dikeluarkan', style: TextStyle(color: Colors.black)),
+                    Text(
+                      'Dikeluarkan',
+                      style: TextStyle(color: Colors.black),
+                      textAlign: TextAlign.center,
+                    ),
                     Container(
                       width: 130,
                       padding: EdgeInsets.all(5),
                       color: Colors.grey[300],
-                      child: Text(
-                        sppd.tanggalDikeluarkan != null ? sppd.tanggalDikeluarkan!.toString().substring(0, 10) : '',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.black,
+                      child: Flexible(
+                        child:  Text(
+                          sppd.tanggalDikeluarkan != null ? sppd.tanggalDikeluarkan!.toString().substring(0, 10) : '',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.black,
+                          ),
+                          overflow: TextOverflow.clip,
                         ),
                       ),
+
                     ),
                   ],
                 ),
               ),
+              SizedBox(width: 5,),
               Expanded(
                 child: Column(
                   children: [
-                    Text('Tanggal Permohonan', style: TextStyle(color: Colors.black)),
+                    Text('Permohonan', style: TextStyle(color: Colors.black)),
                     Container(
                       width: 130,
                       padding: EdgeInsets.all(5),
@@ -106,6 +116,7 @@ class SppdDetails extends StatelessWidget {
                   ],
                 ),
               ),
+              SizedBox(width: 5,),
               Expanded(
                 child: Column(
                   children: [
@@ -126,6 +137,7 @@ class SppdDetails extends StatelessWidget {
                   ],
                 ),
               ),
+              SizedBox(width: 5,),
               Expanded(
                 child: Column(
                   children: [
@@ -172,6 +184,7 @@ class SppdDetails extends StatelessWidget {
                   ],
                 ),
               ),
+              SizedBox(width: 5,),
               Expanded(
                 child: Column(
                   children: [
@@ -192,6 +205,7 @@ class SppdDetails extends StatelessWidget {
                   ],
                 ),
               ),
+              SizedBox(width: 5,),
               Expanded(
                 child: Column(
                   children: [
@@ -263,6 +277,7 @@ class SppdDetails extends StatelessWidget {
                   ],
                 ),
               ),
+              SizedBox(width: 5,),
               Expanded(
                 child: Column(
                   children: [
